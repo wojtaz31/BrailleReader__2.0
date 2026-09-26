@@ -2,42 +2,10 @@
 // npm install @google/genai mime
 // npm install -D @types/node
 
-import {
-    GoogleGenAI,
-} from '@google/genai';
 import {PROMPT} from './prompt';
-import {API_KEY} from './api_key';
+import { analyzeMultipleImages } from "./googleOcr_utils";
+import { analyzeMultipleImagesLocal } from "./tesseract_utils";
 import fs from "fs";
-
-const ai = new GoogleGenAI({ apiKey: API_KEY });
-
-async function analyzeMultipleImages(userPrompt: string, base64Images: string[], mimeType: string = 'image/jpeg') {
-
-    const promptParts: any[] = [
-        { text: userPrompt }
-    ];
-
-    for (const base64 of base64Images) {
-        promptParts.push({
-            inlineData: {
-                data: base64,
-                mimeType: mimeType
-            }
-        });
-    }
-
-    const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: [
-            {
-                role: 'user',
-                parts: promptParts
-            }
-        ]
-    });
-
-    return response.text;
-}
 
 async function main() {
     try {
